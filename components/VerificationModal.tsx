@@ -106,8 +106,8 @@ export function VerificationModal({
 
             {/* Subtitle */}
             <Text style={styles.subtitle}>
-              We've sent a verification code to {email ?? "your email"}. Enter
-              the 6-digit code below.
+              We&apos;ve sent a verification code to {email ?? "your email"}.
+              Enter the 6-digit code below.
             </Text>
 
             {error ? (

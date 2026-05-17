@@ -111,7 +111,7 @@ export default function LanguageSelectScreen() {
               language_name: selectedLang?.name ?? selectedCode,
             });
             setSelectedLanguage(selectedCode as LanguageCode);
-            router.replace("/");
+            router.replace("/(tabs)/home");
           }}
         >
           <Text className="font-poppins-semibold text-base text-white">
