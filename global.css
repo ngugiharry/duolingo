@@ -115,3 +115,86 @@
   line-height: 15px;
   color: #6b7280;
 }
+
+/* ==============================
+   DESIGN TOKEN COLOR UTILITIES
+============================== */
+@utility bg-lingua-purple {
+  background-color: var(--color-lingua-purple);
+}
+
+@utility bg-lingua-deep-purple {
+  background-color: var(--color-lingua-deep-purple);
+}
+
+@utility bg-lingua-blue {
+  background-color: var(--color-lingua-blue);
+}
+
+@utility bg-lingua-green {
+  background-color: var(--color-lingua-green);
+}
+
+@utility bg-success {
+  background-color: var(--color-success);
+}
+
+@utility bg-warning {
+  background-color: var(--color-warning);
+}
+
+@utility bg-streak {
+  background-color: var(--color-streak);
+}
+
+@utility bg-error {
+  background-color: var(--color-error);
+}
+
+@utility bg-info {
+  background-color: var(--color-info);
+}
+
+@utility bg-surface {
+  background-color: var(--color-surface);
+}
+
+@utility bg-background {
+  background-color: var(--color-background);
+}
+
+@utility text-text-primary {
+  color: var(--color-text-primary);
+}
+
+@utility text-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+@utility text-success {
+  color: var(--color-success);
+}
+
+@utility text-warning {
+  color: var(--color-warning);
+}
+
+@utility text-streak {
+  color: var(--color-streak);
+}
+
+@utility text-error {
+  color: var(--color-error);
+}
+
+@utility text-info {
+  color: var(--color-info);
+}
+
+@utility border-border {
+  border-color: var(--color-border);
+}
+
+@utility border-surface {
+  border-color: var(--color-surface);
+}
