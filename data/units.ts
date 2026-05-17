@@ -1,104 +1,54 @@
 import { Unit } from "@/types/learning";
 
-export const units: Unit[] = [
-  // Spanish Units
+export const UNITS: Unit[] = [
   {
-    id: "es-u1",
+    id: "es-unit-1",
     languageCode: "es",
     title: "Greetings & Basics",
-    description: "Learn essential greetings and basic survival phrases",
-    icon: "👋",
+    description: "Start your Spanish journey with everyday phrases",
     order: 1,
-    lessonIds: ["es-l1", "es-l2", "es-l3"],
+    lessonIds: ["es-lesson-1", "es-lesson-2", "es-lesson-3"],
   },
   {
-    id: "es-u2",
-    languageCode: "es",
-    title: "Food & Dining",
-    description: "Master food vocabulary and restaurant conversations",
-    icon: "🍽️",
-    order: 2,
-    lessonIds: ["es-l4", "es-l5"],
-  },
-  {
-    id: "es-u3",
-    languageCode: "es",
-    title: "Travel & Places",
-    description: "Navigate cities and ask for directions",
-    icon: "✈️",
-    order: 3,
-    lessonIds: ["es-l6", "es-l7"],
-  },
-
-  // French Units
-  {
-    id: "fr-u1",
+    id: "fr-unit-1",
     languageCode: "fr",
-    title: "Bonjour! First Steps",
-    description: "Master French greetings and introductions",
-    icon: "💬",
+    title: "Bonjour! Greetings",
+    description: "Learn how to greet and introduce yourself in French",
     order: 1,
-    lessonIds: ["fr-l1", "fr-l2", "fr-l3"],
+    lessonIds: [
+      "fr-lesson-1",
+      "fr-lesson-2",
+      "fr-lesson-3",
+      "fr-lesson-4",
+      "fr-lesson-5",
+    ],
   },
   {
-    id: "fr-u2",
-    languageCode: "fr",
-    title: "Culture & Numbers",
-    description: "Learn numbers and cultural expressions",
-    icon: "🎨",
-    order: 2,
-    lessonIds: ["fr-l4", "fr-l5"],
-  },
-
-  // German Units
-  {
-    id: "de-u1",
-    languageCode: "de",
-    title: "Guten Tag: Basics",
-    description: "German greetings and polite expressions",
-    icon: "🤝",
-    order: 1,
-    lessonIds: ["de-l1", "de-l2"],
-  },
-
-  // Japanese Units
-  {
-    id: "ja-u1",
+    id: "ja-unit-1",
     languageCode: "ja",
-    title: "Hiragana Fundamentals",
-    description: "Learn the basics of Japanese writing",
-    icon: "📝",
+    title: "はじめまして — First Steps",
+    description: "Learn essential Japanese phrases for meeting people",
     order: 1,
-    lessonIds: ["ja-l1", "ja-l2"],
+    lessonIds: [
+      "ja-lesson-1",
+      "ja-lesson-2",
+      "ja-lesson-3",
+      "ja-lesson-4",
+      "ja-lesson-5",
+    ],
   },
-
-  // Korean Units
   {
-    id: "ko-u1",
-    languageCode: "ko",
-    title: "Hangul & Basics",
-    description: "Master the Korean alphabet and basic phrases",
-    icon: "🔤",
+    id: "de-unit-1",
+    languageCode: "de",
+    title: "Hallo! German Basics",
+    description: "Master everyday German greetings and introductions",
     order: 1,
-    lessonIds: ["ko-l1", "ko-l2"],
-  },
-
-  // Mandarin Units
-  {
-    id: "zh-u1",
-    languageCode: "zh",
-    title: "Pinyin & Tones",
-    description: "Learn Chinese pronunciation with pinyin",
-    icon: "🎵",
-    order: 1,
-    lessonIds: ["zh-l1", "zh-l2"],
+    lessonIds: [
+      "de-lesson-1",
+      "de-lesson-2",
+      "de-lesson-3",
+      "de-lesson-4",
+      "de-lesson-5",
+    ],
   },
 ];
-
-export const getUnitsByLanguage = (languageCode: string) => {
-  return units.filter((unit) => unit.languageCode === languageCode);
-};
-
-export const getUnitById = (unitId: string) => {
-  return units.find((unit) => unit.id === unitId);
-};
