@@ -1,5 +1,5 @@
 import { images } from "@/constants/images";
-import {LANGUAGES} from "@/data/languages";
+import { LANGUAGES } from "@/data/languages";
 import { posthog } from "@/lib/posthog";
 import { useLanguageStore } from "@/store/languageStore";
 import { Language, LanguageCode } from "@/types/learning";
@@ -111,7 +111,7 @@ export default function LanguageSelectScreen() {
               language_name: selectedLang?.name ?? selectedCode,
             });
             setSelectedLanguage(selectedCode as LanguageCode);
-            router.replace("/(tabs)/home");
+            router.replace("/");
           }}
         >
           <Text className="font-poppins-semibold text-base text-white">
