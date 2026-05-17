@@ -19,6 +19,14 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </Link>
+
+      <Link href="/language-select" asChild>
+        <TouchableOpacity className="mt-4 w-full rounded-3xl bg-lingua-purple px-6 py-4">
+          <Text className="text-center text-base font-semibold text-white">
+            Choose Language
+          </Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
