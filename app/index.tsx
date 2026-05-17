@@ -4,7 +4,7 @@ import "../global.css";
 export default function App() {
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">Duolingo</Text>
+      <Text className="h1 text-center color-lingua-purple">Duolingo</Text>
     </View>
   );
 }
