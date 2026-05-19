@@ -28,7 +28,7 @@ import { LESSONS } from "@/data/lessons";
 import { posthog } from "@/lib/posthog";
 import { useLanguageStore } from "@/store/languageStore";
 
-type CallStatus = "idle" | "connecting" | "joined" | "error";
+type CallStatus = "idle" | "connecting" | "joined" | "error" | "ended";
 type AgentStatus = "idle" | "connecting" | "connected" | "failed";
 
 const AGENT_USER_ID = "ai-teacher";
@@ -46,6 +46,7 @@ export default function LessonScreen() {
   const [call, setCall] = useState<Call | null>(null);
   const [callStatus, setCallStatus] = useState<CallStatus>("idle");
   const [agentStatus, setAgentStatus] = useState<AgentStatus>("idle");
+  const [isMuted, setIsMuted] = useState(true);
 
   const callRef = useRef<Call | null>(null);
   const clientRef = useRef<StreamVideoClient | null>(null);
@@ -83,6 +84,22 @@ export default function LessonScreen() {
       stopAgentSession(callRef.current?.id ?? null, agentSessionRef.current);
     };
   }, [isLoaded, user, lesson]);
+
+  useEffect(() => {
+    if (!callRef.current) return;
+
+    const unsubscribe = callRef.current.state.callingState$.subscribe(
+      (state) => {
+        if (state === "left" || state === "offline") {
+          setCallStatus("ended");
+        }
+      },
+    );
+
+    return () => {
+      unsubscribe.unsubscribe?.();
+    };
+  }, [call]);
 
   async function startCall() {
     if (!user || !lesson) return;
@@ -237,6 +254,58 @@ export default function LessonScreen() {
     );
   }
 
+  if (callStatus === "ended") {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: colors.neutral.background }}
+      >
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text
+            style={{
+              fontFamily: "Poppins-SemiBold",
+              fontSize: 16,
+              color: colors.neutral.textPrimary,
+              marginBottom: 12,
+            }}
+          >
+            Call Ended
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Poppins-Regular",
+              fontSize: 14,
+              color: colors.neutral.textSecondary,
+              marginBottom: 24,
+            }}
+          >
+            Thanks for practicing!
+          </Text>
+          <TouchableOpacity
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 12,
+              backgroundColor: colors.primary.purple,
+              borderRadius: 8,
+            }}
+            onPress={handleLeave}
+          >
+            <Text
+              style={{
+                fontFamily: "Poppins-SemiBold",
+                fontSize: 14,
+                color: "#fff",
+              }}
+            >
+              Return to Lessons
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   const displayStatus = getDisplayStatus(callStatus, agentStatus);
 
   return (
@@ -289,6 +358,8 @@ export default function LessonScreen() {
               lesson={lesson}
               call={call}
               onRetry={() => startAgentSession(call.id)}
+              isMuted={isMuted}
+              onMuteToggle={setIsMuted}
             />
           </StreamCall>
         </StreamVideo>
@@ -380,11 +451,15 @@ function ActiveCallContent({
   lesson,
   call,
   onRetry,
+  isMuted,
+  onMuteToggle,
 }: {
   agentStatus: AgentStatus;
   lesson: Lesson;
   call: Call;
   onRetry: () => void;
+  isMuted: boolean;
+  onMuteToggle: (muted: boolean) => void;
 }) {
   const { useMicrophoneState, useCallClosedCaptions } = useCallStateHooks();
   const { microphone } = useMicrophoneState();
@@ -430,7 +505,7 @@ function ActiveCallContent({
   const showCaptions = partial !== null || captions.length > 0;
 
   function handlePressIn() {
-    if (!isReady) return;
+    if (!isReady || isMuted) return;
     setIsHeld(true);
     microphone.enable();
   }
@@ -438,6 +513,15 @@ function ActiveCallContent({
   function handlePressOut() {
     setIsHeld(false);
     microphone.disable();
+  }
+
+  function handleMuteToggle() {
+    const newMutedState = !isMuted;
+    onMuteToggle(newMutedState);
+    if (newMutedState) {
+      microphone.disable();
+      setIsHeld(false);
+    }
   }
 
   return (
@@ -580,58 +664,83 @@ function ActiveCallContent({
       {/* Push-to-talk */}
       <View style={styles.pushToTalkSection}>
         <View style={styles.pushToTalkContainer}>
-          <Pressable
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            disabled={!isReady}
-            style={({ pressed }) => [
-              styles.micButtonOuter,
-              (pressed || isHeld) && styles.micButtonOuterActive,
-            ]}
-          >
-            {({ pressed }) => {
-              const active = pressed || isHeld;
-              return (
-                <View
-                  style={[
-                    styles.micButton,
-                    active && styles.micButtonActive,
-                    !isReady && styles.micButtonDisabled,
-                  ]}
-                >
-                  {agentStatus === "connecting" ? (
-                    <ActivityIndicator
-                      size="small"
-                      color={colors.primary.purple}
-                    />
-                  ) : (
-                    <Ionicons
-                      name={active ? "mic" : "mic-outline"}
-                      size={34}
-                      color={
-                        active
-                          ? "#fff"
-                          : isReady
-                            ? colors.neutral.textPrimary
-                            : colors.neutral.textSecondary
-                      }
-                    />
-                  )}
-                </View>
-              );
-            }}
-          </Pressable>
+          <View style={styles.micControlsRow}>
+            <Pressable
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              disabled={!isReady || isMuted}
+              style={({ pressed }) => [
+                styles.micButtonOuter,
+                (pressed || isHeld) && styles.micButtonOuterActive,
+              ]}
+            >
+              {({ pressed }) => {
+                const active = pressed || isHeld;
+                return (
+                  <View
+                    style={[
+                      styles.micButton,
+                      active && styles.micButtonActive,
+                      !isReady && styles.micButtonDisabled,
+                      isMuted && styles.micButtonMuted,
+                    ]}
+                  >
+                    {agentStatus === "connecting" ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.primary.purple}
+                      />
+                    ) : (
+                      <Ionicons
+                        name={
+                          isMuted
+                            ? "mic-off"
+                            : active
+                              ? "mic"
+                              : "mic-outline"
+                        }
+                        size={34}
+                        color={
+                          isMuted
+                            ? colors.semantic.error
+                            : active
+                              ? "#fff"
+                              : isReady
+                                ? colors.neutral.textPrimary
+                                : colors.neutral.textSecondary
+                        }
+                      />
+                    )}
+                  </View>
+                );
+              }}
+            </Pressable>
+            <TouchableOpacity
+              onPress={handleMuteToggle}
+              style={styles.muteToggleButton}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons
+                name={isMuted ? "volume-mute" : "volume-high"}
+                size={20}
+                color={isMuted ? colors.semantic.error : colors.primary.purple}
+              />
+            </TouchableOpacity>
+          </View>
           <Text
             style={[
               styles.pushToTalkLabel,
               isHeld && { color: colors.primary.purple },
+              isMuted && { color: colors.semantic.error },
             ]}
           >
-            {isHeld
-              ? "Listening..."
-              : isReady
-                ? "Push & hold to speak"
-                : "Waiting for teacher..."}
+            {isMuted
+              ? "🔇 Muted"
+              : isHeld
+                ? "Listening..."
+                : isReady
+                  ? "Push & hold to speak"
+                  : "Waiting for teacher..."}
           </Text>
         </View>
       </View>
@@ -838,6 +947,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
   },
+  micControlsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   micButtonOuter: {
     width: 104,
     height: 104,
@@ -873,6 +987,15 @@ const styles = StyleSheet.create({
   },
   micButtonDisabled: {
     opacity: 0.5,
+  },
+  micButtonMuted: {
+    backgroundColor: "rgba(232, 69, 60, 0.1)",
+  },
+  muteToggleButton: {
+    marginLeft: 16,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(139, 92, 246, 0.1)",
   },
   pushToTalkLabel: {
     fontFamily: "Poppins-Medium",
