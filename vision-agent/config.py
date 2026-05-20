@@ -1,6 +1,7 @@
 """Configuration for the Language Teacher Agent."""
 import os
 from dataclasses import dataclass
+from typing import Optional, Dict, Any
 from dotenv import load_dotenv
 
 
@@ -28,8 +29,11 @@ class TeacherConfig:
     llm_fps: int = int(os.getenv("LLM_FPS", "10"))
 
     # Agent configuration
-    agent_name: str = "Language Teacher"
-    agent_id: str = "language-teacher"
+    agent_name: str = "AI Language Teacher"
+    agent_id: str = "ai-teacher"
+
+    # Lesson context (optionally populated from Stream call custom data)
+    lesson_context: Optional[Dict[str, Any]] = None
 
     def validate(self) -> bool:
         """Validate that all required configuration is present."""
@@ -58,4 +62,6 @@ class TeacherConfig:
             "llm_temperature": self.llm_temperature,
             "llm_fps": self.llm_fps,
             "agent_name": self.agent_name,
+            "agent_id": self.agent_id,
+            "has_lesson_context": self.lesson_context is not None,
         }

@@ -1,5 +1,74 @@
 const AGENT_URL = process.env.VISION_AGENT_URL ?? "http://127.0.0.1:8000";
 
+interface CallCustomData {
+  lesson_id?: string;
+  language?: string;
+  system_prompt?: string;
+  intro_message?: string;
+  vocabulary?: string[];
+  phrases?: string[];
+  topics?: string[];
+  [key: string]: unknown;
+}
+
+async function fetchStreamCallCustomData(
+  callId: string,
+): Promise<CallCustomData | null> {
+  const streamApiKey = process.env.STREAM_API_KEY;
+  const streamApiSecret = process.env.STREAM_API_SECRET;
+
+  if (!streamApiKey || !streamApiSecret) {
+    console.warn(
+      "[agent-session] Stream credentials not available, skipping custom data fetch",
+    );
+    return null;
+  }
+
+  try {
+    // Stream API endpoint to get call metadata
+    // Use Basic auth with api_key:api_secret
+    const credentials = Buffer.from(`${streamApiKey}:${streamApiSecret}`).toString(
+      "base64",
+    );
+
+    const res = await fetch(
+      `https://video.stream-io-api.com/api/v1/calls/default/${encodeURIComponent(callId)}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (!res.ok) {
+      console.warn(`[agent-session] Could not fetch call data: ${res.status}`);
+      return null;
+    }
+
+    const callData = await res.json();
+    const customData = callData.call?.custom;
+
+    if (customData) {
+      console.log(`[agent-session] Fetched custom data for call ${callId}:`, {
+        lesson_id: customData.lesson_id,
+        language: customData.language,
+        has_system_prompt: !!customData.system_prompt,
+      });
+      return customData;
+    }
+
+    return null;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `[agent-session] Failed to fetch call custom data: ${message}`,
+    );
+    return null;
+  }
+}
+
 export async function POST(request: Request): Promise<Response> {
   let body: { callId?: string; callType?: string };
   try {
@@ -19,12 +88,20 @@ export async function POST(request: Request): Promise<Response> {
   );
 
   try {
+    // Fetch lesson context from Stream call custom data
+    const customData = await fetchStreamCallCustomData(callId);
+
+    const sessionBody: Record<string, unknown> = { call_type: callType };
+    if (customData) {
+      sessionBody.lesson_context = customData;
+    }
+
     const res = await fetch(
       `${AGENT_URL}/calls/${encodeURIComponent(callId)}/sessions`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ call_type: callType }),
+        body: JSON.stringify(sessionBody),
       },
     );
 
