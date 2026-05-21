@@ -1,8 +1,49 @@
-# Welcome to your Expo app 👋
+# Duolingo-Inspired AI Language Learning App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This project is a Duolingo-inspired AI language learning mobile app built with Expo.
 
-## Get started
+The app teaches users languages through interactive lessons that may include:
+
+- video-based AI teacher lessons
+- audio lessons
+- chat-based AI tutor lessons
+- vocabulary review
+- local XP and lesson completion
+- language selection
+- beautiful mobile-first UI inspired by playful learning apps
+
+This is primarily a learning project. The goal is to teach developers how to build a modern AI-powered Expo app feature by feature.
+
+## Tech Stack
+
+- Expo
+- React Native
+- TypeScript
+- Expo Router
+- NativeWind / Tailwind CSS
+- Zustand
+- AsyncStorage
+- Clerk for authentication
+- Stream / GetStream for video and real-time communication
+- Stream Vision Agents for AI video teacher capability
+- Server-side API routes or backend functions for secrets, tokens, and AI calls
+
+## Development Philosophy
+
+Build feature by feature.
+
+1. Understand the user request.
+2. Check the project guidance before coding.
+3. Keep the implementation simple.
+4. Avoid overengineering.
+5. Prefer readable code over clever code.
+6. Build the smallest useful version first.
+7. Refactor only when repetition or complexity appears.
+8. Keep the app easy to teach and explain.
+
+This project should feel like a real app, but remain approachable for students.
+
+## Getting Started
 
 1. Install dependencies
 
@@ -16,35 +57,12 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Open the app in a simulator or Expo Go from the Expo CLI menu.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+You can start developing by editing files in the **app/** directory. This app uses file-based routing via Expo Router.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Notes
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Do not introduce new major libraries without a strong reason.
+- Use the existing architecture and component structure unless a clear improvement is needed.
+- Follow the project’s established conventions for state, styling, and backend integration.
