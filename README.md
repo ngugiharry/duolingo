@@ -60,9 +60,3 @@ This project should feel like a real app, but remain approachable for students.
 3. Open the app in a simulator or Expo Go from the Expo CLI menu.
 
 You can start developing by editing files in the **app/** directory. This app uses file-based routing via Expo Router.
-
-## Notes
-
-- Do not introduce new major libraries without a strong reason.
-- Use the existing architecture and component structure unless a clear improvement is needed.
-- Follow the project’s established conventions for state, styling, and backend integration.
